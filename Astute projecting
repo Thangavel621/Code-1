@@ -1,0 +1,51 @@
+// Include the required libraries
+#include <Stepper.h>
+
+// Define constants for the stepper motor
+const int stepsPerRevolution = 200;  // Change this according to your stepper motor
+const int motorPin1 = 8;
+const int motorPin2 = 9;
+const int motorPin3 = 10;
+const int motorPin4 = 11;
+
+// Initialize the stepper motor object
+Stepper myStepper(stepsPerRevolution, motorPin1, motorPin2, motorPin3, motorPin4);
+
+// Define pins for photo transistor and relay
+const int photoTransistorPin = A0;
+const int relayPin = 12;
+
+void setup() {
+  // Set relay pin as output
+  pinMode(relayPin, OUTPUT);
+  // Set motor pins as output
+  pinMode(motorPin1, OUTPUT);
+  pinMode(motorPin2, OUTPUT);
+  pinMode(motorPin3, OUTPUT);
+  pinMode(motorPin4, OUTPUT);
+  // Initialize serial communication
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Read the value from the photo transistor
+  int lightValue = analogRead(photoTransistorPin);
+  // Print the value to the serial monitor
+  Serial.print("Light value: ");
+  Serial.println(lightValue);
+  
+  // Check if light value is below a threshold (you may need to adjust this threshold)
+  if (lightValue < 500) {
+    // Turn on the lamp by activating the relay
+    digitalWrite(relayPin, HIGH);
+    // Rotate the stepper motor clockwise
+    myStepper.step(stepsPerRevolution);
+    delay(500); // Adjust this delay as needed
+  } else {
+    // Turn off the lamp by deactivating the relay
+    digitalWrite(relayPin, LOW);
+    // Rotate the stepper motor counter-clockwise
+    myStepper.step(-stepsPerRevolution);
+    delay(500); // Adjust this delay as needed
+  }
+}
